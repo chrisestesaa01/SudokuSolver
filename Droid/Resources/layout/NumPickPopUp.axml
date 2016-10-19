@@ -17,18 +17,21 @@
         android:id="@+id/linearLayout1">
         <Button
             android:id="@+id/button2"
-            android:text="Cancel"
+            android:text="@string/cancelButtonText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
         <Button
             android:id="@+id/button1"
-            android:text="Set"
+            android:text="@string/setButtonText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
         <Button
             android:id="@+id/button3"
-            android:text="Clear"
+            android:text="@string/clearButtonText"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>

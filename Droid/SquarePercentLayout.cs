@@ -1,15 +1,14 @@
-﻿/*
- * 
- * Wrapper for the PercentRelativeLayout class to create a square layout
- * object whose width is set by percent of parent layout.
- * 
- */
-
-using System;
-using Android.App;
+﻿using Android.App;
 using Android.Support.Percent;
 
 namespace SudokuSolver.Droid {
+
+    /*
+     * 
+     * Wrapper for the PercentRelativeLayout class to create a square layout
+     * object whose width is set by percent of parent layout.
+     * 
+     */
 
     public class SquarePercentLayout : PercentRelativeLayout {
 

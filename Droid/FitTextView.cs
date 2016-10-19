@@ -6,28 +6,52 @@ using Android.Widget;
 
 namespace SudokuSolver.Droid {
 
-    /* FitEditText =============================================================
+    /* FitTextView =============================================================
      * 
      * A class that extends EditText to automatically scale the font size to
      * fit the text to the view.
      * 
      ------------------------------------------------------------------------ */
-    public class FitEditText : TextView {
+    public class FitTextView : EditText {
+
+        #region Private members
 
         //Paint object to use for scalling text.
         private Paint mTestPaint;
 
-        /* Constructors ===================================================== */
-        public FitEditText(Context context)
+        #endregion
+
+        #region Constructors
+
+        public FitTextView(Context context)
             : base(context) {
             initialise();
         }
 
-        public FitEditText(Context context, IAttributeSet attrs)
+        public FitTextView(Context context, IAttributeSet attrs)
             : base(context, attrs) {
             initialise();
         }
-        /* ------------------------------------------------------------------ */
+
+        #endregion
+
+        #region Base class method overrides
+
+        /* OnSizeChanged =======================================================
+         * 
+         * Callback to execute when the field's size is changed.
+         *
+         -------------------------------------------------------------------- */
+        override protected void OnSizeChanged(int w, int h, int oldw, int oldh) {
+
+            //Refit text to new size.
+            refitText(this.Text, w, h);
+        }
+        // ---------------------------------------------------------------------
+
+        #endregion
+
+        #region Private methods
 
         /* initialise ==========================================================
          * 
@@ -44,7 +68,7 @@ namespace SudokuSolver.Droid {
             mTestPaint = new Paint();
             mTestPaint.Set(this.Paint);
         }
-        /* ------------------------------------------------------------------ */
+        // ---------------------------------------------------------------------
 
         /* refitText ===========================================================
          * 
@@ -122,7 +146,7 @@ namespace SudokuSolver.Droid {
                 this.SetTextSize(ComplexUnitType.Px , lo);
             }
         }
-        /* ------------------------------------------------------------------ */
+        // ---------------------------------------------------------------------
 
         /* OnTextChanged =======================================================
          * 
@@ -134,20 +158,9 @@ namespace SudokuSolver.Droid {
             //Call refit when text changes.
             refitText(this.Text, this.Width, this.Height);
         }
-        /* ------------------------------------------------------------------ */
+        // ---------------------------------------------------------------------
 
-        /* OnSizeChanged =======================================================
-         * 
-         * Callback to execute when the field's size is changed.
-         *
-         -------------------------------------------------------------------- */
-        override protected void OnSizeChanged(int w, int h, int oldw, int oldh) {
-
-            //Refit text to new size.
-            refitText(this.Text, w, h);
-        }
-        /* ------------------------------------------------------------------ */
-
+        #endregion
     }
 
 }

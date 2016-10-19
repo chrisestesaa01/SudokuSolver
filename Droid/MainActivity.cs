@@ -1,55 +1,56 @@
 ﻿using Android.App;
-using Android.Widget;
 using Android.OS;
-using Android.Views;
+using Android.Widget;
+using Java.Lang;
 
 namespace SudokuSolver.Droid {
+
     [Activity(Label = "SudokuSolver", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity {
-        int count = 1;
+
+        //This object will programmatically build out puzzle grid UI layout.
+        private GridBuilder myPuzzle;
+
+        //The puzzle solver.
+        private Solver mySolver;
 
         protected override void OnCreate(Bundle savedInstanceState) {
+
+            //Base class OnCreate.
             base.OnCreate(savedInstanceState);
 
-            // Set our view from the "main" layout resource
+            //Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-            FrameLayout topLayout;
+            //Create our puzzle grid.
+            myPuzzle = new GridBuilder(this);
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            //Button button = FindViewById<Button>(Resource.Id.myButton);
-            //TextView myText = FindViewById<TextView>(Resource.Id.editText1);
+            //Create our solver.
+            mySolver = new Solver(myPuzzle);
 
-            GridBuilder myGridbuilder = new GridBuilder(this);
-
-            topLayout = this.FindViewById<FrameLayout>(Resource.Id.frameLayout1);
-
-
-            myGridbuilder.buildGrid(topLayout);
-  
-            //button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); 
-            //myText.Text = "1";
-        
-
-
+            //Set 'Solve' button click event handler function.
+            Button myButton = this.FindViewById<Button>(Resource.Id.solveButton);
+            myButton.Click += (sender, e) => {
+                solveClickHandler();
+            };
         }
 
-        protected override void OnResume() {
-            base.OnResume();
+        public void solveClickHandler() {
 
-            //LinearLayout MainLayout = this.FindViewById<LinearLayout>(Resource.Id.MainLayout1);
+            //A thread to run the solver in the background.
+            Thread solverThread;
 
-        
+            //Set up the solver.
+            mySolver.Setup();
 
-            //MainLayout.Invalidate();
+            //Set up new thread to run the solver loop.
+            solverThread = new Thread(new Runnable(() => mySolver.SolveLoop()));
 
-
+            //Start the new thread.
+            solverThread.Start();
 
         }
-         
-
-
     }
 }
+
 

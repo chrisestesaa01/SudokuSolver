@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Click Me!</string>
     <string name="app_name">SudokuSolver.Droid</string>
+	<string name="numPickerTitle">Select number</string>
+	<string name="solveButtonText">Solve Puzzle</string>
+	<string name="setButtonText">Set</string>
+	<string name="clearButtonText">Clear</string>
+	<string name="cancelButtonText">Cancel</string>
 </resources>
