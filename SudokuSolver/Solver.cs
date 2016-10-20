@@ -123,10 +123,6 @@ namespace SudokuSolver {
             //Flag to check when the puzzle is solved.
             bool solvedCheck;
 
-            //Calc vars.
-            bool check1;
-            bool check2;
-
             //Loop counters.
             int xLoop;
             int yLoop;
@@ -134,32 +130,28 @@ namespace SudokuSolver {
             do {
 
                 //Init check.
-                solvedCheck = false;
+                solvedCheck = true;
 
                 //For all cells in the grid...
                 for (xLoop = 0; xLoop < 9; xLoop++) {
                     for (yLoop = 0; yLoop < 9; yLoop++) {
 
-                        //Init checks.
-                        check1 = false;
-                        check2 = false;
-
                         //If cell is unsolved, run firt check routine.
                         if (myPuzzleArray[xLoop, yLoop].Count > 1) {
-                            check1 = checkCell1(xLoop, yLoop);
+                            checkCell1(xLoop, yLoop);
                         }
 
                         //If cell is still unsolved, run second check routine.
                         if (myPuzzleArray[xLoop, yLoop].Count > 1) {
-                            check2 = checkCell2(xLoop, yLoop);
+                            checkCell2(xLoop, yLoop);
                         }
 
-                        //Check for complete.
-                        solvedCheck |= (check1 || check2);
+                        //Update check.
+                        solvedCheck |= (myPuzzleArray[xLoop, yLoop].Count == 1);
                     }
                 }
 
-            //Go until both checks find nothing to change in all cells.
+            //Go until all cells are solved.
             } while (solvedCheck) ;
         }
         // ---------------------------------------------------------------------

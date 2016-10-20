@@ -14,6 +14,9 @@ namespace SudokuSolver.Droid {
         //The puzzle solver.
         private Solver mySolver;
 
+        //A thread to run the solver in the background.
+        private Thread solverThread;
+
         protected override void OnCreate(Bundle savedInstanceState) {
 
             //Base class OnCreate.
@@ -35,20 +38,19 @@ namespace SudokuSolver.Droid {
             };
         }
 
-        public void solveClickHandler() {
+        private void solveClickHandler() {
 
-            //A thread to run the solver in the background.
-            Thread solverThread;
+            if (solverThread == null) {
 
-            //Set up the solver.
-            mySolver.Setup();
+                //Set up the solver.
+                mySolver.Setup();
 
-            //Set up new thread to run the solver loop.
-            solverThread = new Thread(new Runnable(() => mySolver.SolveLoop()));
+                //Set up new thread to run the solver loop.
+                solverThread = new Thread(new Runnable(() => mySolver.SolveLoop()));
 
-            //Start the new thread.
-            solverThread.Start();
-
+                //Start the new thread.
+                solverThread.Start();
+            }
         }
     }
 }

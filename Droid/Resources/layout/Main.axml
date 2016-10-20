@@ -5,7 +5,8 @@
     p1:minHeight="25px"
     p1:layout_width="match_parent"
     p1:layout_height="match_parent"
-    p1:id="@+id/linearLayout1">
+    p1:id="@+id/linearLayout1"
+    p1:gravity="center_horizontal">
     <Button
         p1:layout_width="match_parent"
         p1:layout_height="wrap_content"

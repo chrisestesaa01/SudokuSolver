@@ -12,7 +12,7 @@ namespace SudokuSolver.Droid {
      * fit the text to the view.
      * 
      ------------------------------------------------------------------------ */
-    public class FitTextView : EditText {
+    public class FitTextView : TextView {
 
         #region Private members
 

@@ -40,6 +40,9 @@ namespace SudokuSolver.Droid {
             //Top level layout.
             LinearLayout topLayout;
 
+            //Layout parameters for this.
+            LinearLayout.LayoutParams thisParms;
+
             //Set activity reference.
             myMainActivity = theMainActivity;
 
@@ -49,9 +52,19 @@ namespace SudokuSolver.Droid {
             //Get top level layout.
             topLayout = (LinearLayout)rootView.GetChildAt(0);
 
+            //Create layout parameters for this.
+            thisParms = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WrapContent,
+                ViewGroup.LayoutParams.WrapContent
+            );
+
+            //Set this object's layout parms.
+            this.LayoutParameters = thisParms;
+
             //Add this grid builder to the top of the layout.
             topLayout.AddView(this, 0);
 
+            //Build the grid.
             this.buildGrid();
 
         }
@@ -156,57 +169,17 @@ namespace SudokuSolver.Droid {
             int xLoop;
             int yLoop;
 
-            //Top level layout parameters.
-            LinearLayout.LayoutParams topLayoutParms;
-            //(Not sure why this is a LinearLayout.LayoutParams when this class 
-            //extends FrameLayout but using FrameLayout here generates a class 
-            //cast exception)
-
-            //Main grid layout and parameters.
-            SquarePercentLayout mainGridLayout;
-            PercentRelativeLayout.LayoutParams mainGridLayoutParms;
-
-            //Subgrid layout and paramters.
-            SquarePercentLayout subGridLayout;
-            PercentRelativeLayout.LayoutParams subGridLayoutParms;
-
-            //Layout helper to set percent widths of subgrids.
-            PercentLayoutHelper.PercentLayoutInfo subGridLayoutHelper;
-
-            //Layouts for creating a margin around the subgrids.
-            LinearLayout subGridMarginLayout1;
-            SquarePercentLayout subGridMarginLayout2;
-
-            //Num field layout and paramters.
-            SquarePercentLayout numFieldLayout;
-            PercentRelativeLayout.LayoutParams numFieldLayoutParms;
-
-            //Layout helper to set percent widths of num fields.
-            PercentLayoutHelper.PercentLayoutInfo numFieldLayoutHelper;
-
-            //Num field.
-            FitTextView numField;
-
-            //Set top layout to match parent and center child views.
-            topLayoutParms = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WrapContent,
-                ViewGroup.LayoutParams.WrapContent
-            );
-
-            //Set gravity to center our grid.
-            topLayoutParms.Gravity = GravityFlags.CenterHorizontal;
-
-            //Set layout parms.
-            this.LayoutParameters = topLayoutParms;
+            #region Top level grid layout:
 
             //Create a square percent layout to hold the main grid.
-            mainGridLayout = new SquarePercentLayout(myMainActivity);
+            SquarePercentLayout mainGridLayout = new SquarePercentLayout(myMainActivity);
 
             //Set main grid children to wrap.
-            mainGridLayoutParms = new PercentRelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WrapContent,
-                ViewGroup.LayoutParams.WrapContent
-            );
+            PercentRelativeLayout.LayoutParams mainGridLayoutParms = new 
+                PercentRelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MatchParent,
+                    ViewGroup.LayoutParams.MatchParent
+                );
 
             //Set main grid layout parms.
             mainGridLayout.LayoutParameters = mainGridLayoutParms;
@@ -217,85 +190,138 @@ namespace SudokuSolver.Droid {
             //Add main grid to top layout.
             this.AddView(mainGridLayout);
 
+            #endregion
+
             //Init ID counter.
             idCounter = 0;
 
-            //For each cell in the main grid...
+            //For each subgrid in the main grid...
             for (xLoop = 0; xLoop < 9; xLoop++) {
 
-                //Create a new square percent layout for the subgrid.
-                subGridLayout = new SquarePercentLayout(myMainActivity);
+                #region Subgrid outer frame: (LinearLayout)
 
-                //Set subgrid layout to match parent.
-                subGridLayoutParms = new PercentRelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MatchParent,
-                    ViewGroup.LayoutParams.MatchParent
-                );
+                //Create subgrid outer frame.
+                LinearLayout subGridFrame = new LinearLayout(myMainActivity);
 
-                //Get subgrid layout helper.
-                subGridLayoutHelper = subGridLayoutParms.PercentLayoutInfo;
+                //Create parameters for subgrid frame.
+                PercentRelativeLayout.LayoutParams subGridFrameLayoutParms = new
+                    PercentRelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WrapContent,
+                        ViewGroup.LayoutParams.WrapContent
+                    );
+
+                //Get percent layout helper for subgrid frame.
+                PercentLayoutHelper.PercentLayoutInfo pctLayoutHelper = 
+                    subGridFrameLayoutParms.PercentLayoutInfo;
 
                 //Set left and top margins.
-                subGridLayoutHelper.LeftMarginPercent = ((xLoop % 3) * (0.33f)); // + 0.006f;
-                subGridLayoutHelper.TopMarginPercent = ((xLoop / 3) * (0.33f));
+                pctLayoutHelper.LeftMarginPercent = ((xLoop % 3) * (1/3f));
+                pctLayoutHelper.TopMarginPercent = ((xLoop / 3) * (1/3f));
 
                 //Set subgrid container width to 1/3 of parent.
-                subGridLayoutHelper.WidthPercent = (0.33f);
+                pctLayoutHelper.WidthPercent = (1/3f);
+
+                //Set background and padding for large gridlines.
+                subGridFrame.SetBackgroundColor(Android.Graphics.Color.Black);
+                subGridFrame.SetPadding(2, 2, 2, 2);
+
+                //Set outer frame parms.
+                subGridFrame.LayoutParameters = subGridFrameLayoutParms;
+
+                //Set to center child view.
+                subGridFrame.SetGravity(GravityFlags.Center);
+
+                //Add subgrid frame to main grid.
+                mainGridLayout.AddView(subGridFrame);
+
+                #endregion
+
+                #region Subgrid layout: (SquarePercentLayout)
+
+                //Create a new square percent layout for the subgrid.
+                SquarePercentLayout subGridLayout = new SquarePercentLayout(myMainActivity);
+
+                //Set subgrid layout to match parent.
+                PercentRelativeLayout.LayoutParams subGridLayoutParms = new 
+                    PercentRelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WrapContent,
+                        ViewGroup.LayoutParams.WrapContent
+                    );
 
                 //Set subgrid layout parms.
                 subGridLayout.LayoutParameters = subGridLayoutParms;
 
-                //Layout subgrid.
-                subGridLayout.RequestLayout();
-
                 //Set subgrid background.
                 subGridLayout.SetBackgroundColor(Android.Graphics.Color.Black);
 
-                //Add subgrid to main grid.
-                mainGridLayout.AddView(subGridLayout);
+                subGridFrame.RequestLayout();
 
-                //Nested percent and linear layout to creeate margins for
-                //subgrids.
-                subGridMarginLayout1 = new LinearLayout(myMainActivity);
-                subGridLayout.AddView(subGridMarginLayout1);
-                subGridMarginLayout2 = new SquarePercentLayout(myMainActivity);
-                subGridLayoutParms.SetMargins(4, 4, 4, 4);
-                subGridMarginLayout2.LayoutParameters = subGridLayoutParms;
-                subGridMarginLayout1.AddView(subGridMarginLayout2);
+                //Add subgrid to subgrid frame.
+                subGridFrame.AddView(subGridLayout);
+
+                #endregion
 
                 //For each cell in subgrid...
                 for (yLoop = 0; yLoop < 9; yLoop++) {
 
-                    //Create a new square percent layout for the subgrid.
-                    numFieldLayout = new SquarePercentLayout(myMainActivity);
+                    #region Number field outer frame: (LinearLayout)
+
+                    //Create a linear layout for the num holder outer frame.
+                    LinearLayout numFieldLayout = new LinearLayout(myMainActivity);
 
                     //Set subgrid layout to match parent.
-                    numFieldLayoutParms = new PercentRelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MatchParent,
-                        ViewGroup.LayoutParams.MatchParent
-                    );
+                    PercentRelativeLayout.LayoutParams numFieldLayoutParms = new 
+                        PercentRelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WrapContent,
+                            ViewGroup.LayoutParams.WrapContent
+                        );
 
                     //Get subgrid layout helper.
-                    numFieldLayoutHelper = numFieldLayoutParms.PercentLayoutInfo;
+                    PercentLayoutHelper.PercentLayoutInfo numFieldLayoutHelper = 
+                        numFieldLayoutParms.PercentLayoutInfo;
 
                     //Set left and top margins.
-                    numFieldLayoutHelper.LeftMarginPercent = ((yLoop % 3) * (1f / 3));
-                    numFieldLayoutHelper.TopMarginPercent = ((yLoop / 3) * (1f / 3));
+                    numFieldLayoutHelper.LeftMarginPercent = ((yLoop % 3) * (1/3f));
+                    numFieldLayoutHelper.TopMarginPercent = ((yLoop / 3) * (1/3f));
 
                     //Set subgrid container width.
-                    numFieldLayoutHelper.WidthPercent = 0.32f;
+                    numFieldLayoutHelper.WidthPercent = (1/3f);
 
                     //Set subgrid layout parms.
                     numFieldLayout.LayoutParameters = numFieldLayoutParms;
 
-                    //Layout subgrid.
-                    numFieldLayout.RequestLayout();
+                    //Add frame to subgrid.
+                    subGridLayout.AddView(numFieldLayout);
 
-                    //Set num field holder background.
-                    numFieldLayout.SetBackgroundColor(Android.Graphics.Color.DarkCyan);
+                    #endregion
+
+                    #region Number field layout: (SquarePercentLayout)
+
+                    //Create square percent layout for the num field.
+                    SquarePercentLayout numFieldHolder = new SquarePercentLayout(myMainActivity);
+                      
+                    //Set num field holder layout to match parent.
+                    PercentRelativeLayout.LayoutParams numfieldHolderParms = new 
+                        PercentRelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WrapContent,
+                            ViewGroup.LayoutParams.WrapContent
+                        );
+
+                    //Set subgrid layout parms.
+                    numFieldHolder.LayoutParameters = numfieldHolderParms;
+
+                    //Set subgrid padding to show small gridlines.
+                    numFieldHolder.SetPadding(2, 2, 2, 2);
+
+                    //Add num field holder to layout frame.
+                    numFieldLayout.AddView(numFieldHolder);
+
+                    #endregion
+
+                    #region Number field: (FitTextView)
 
                     //Create num field.
-                    numField = new FitTextView(myMainActivity);
+                    FitTextView numField = new FitTextView(myMainActivity);
 
                     //Set numfield ID.
                     numField.Id = idCounter;
@@ -313,29 +339,32 @@ namespace SudokuSolver.Droid {
                     //No font padding.
                     numField.SetIncludeFontPadding(false);
 
+                    //Set so we don't lose numfield text on rotate.
+                    numField.FreezesText = true;
+
                     //Set field text value.
                     setNumText(numField);
 
                     //Cells don't need focus because we are using our num picker.
-                    //numField.Focusable = false;
+                    numField.Focusable = false;
 
                     //Set callback for click to show our num picker.
                     numField.Click += (object sender, EventArgs e) => {
                         showNumPicker((FitTextView)sender);
                     };
 
+                    //Set field background color.
+                    numField.SetBackgroundColor(Android.Graphics.Color.DarkGreen);
+
                     //Lay out field.
                     numField.RequestLayout();
 
                     //Add field to holder.
-                    numFieldLayout.AddView(numField);
+                    numFieldHolder.AddView(numField);
 
-                    //Add holder to subgrid.
-                    subGridMarginLayout2.AddView(numFieldLayout);
+                    #endregion
                 }
-
             }
-
         }
         // ---------------------------------------------------------------------
 
@@ -346,6 +375,7 @@ namespace SudokuSolver.Droid {
          * ------------------------------------------------------------------ */
         private void setNumText(FitTextView numField) {
 
+            //Default puzzle:
             String[] defaults = new String[81];
             defaults[5] = "6";
             defaults[11] = "5";
@@ -376,8 +406,8 @@ namespace SudokuSolver.Droid {
             defaults[75] = "7";
 
             numField.Text = "_";
-            if (defaults[numField.Id] != null)
-                numField.Text = defaults[numField.Id];
+            //if (defaults[numField.Id] != null)
+            //    numField.Text = defaults[numField.Id];
             
         }
         // ---------------------------------------------------------------------
